@@ -1,0 +1,38 @@
+# Godot 4 specific
+game/.godot/
+game/export/*.exe
+game/export/*.dmg
+game/export/*.app
+game/export/*.zip
+game/export/*.pck
+
+# GDExtension build artifacts
+game/addons/**/bin/
+game/addons/**/build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backend
+backend/log/
+backend/tmp/
+backend/storage/
+backend/node_modules/
+backend/.bundle/
+backend/vendor/bundle/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+*.pem
+
+# Redis dump
+dump.rdb
