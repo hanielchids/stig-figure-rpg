@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DifficultyProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/ai/difficulty_profile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+profile_name = "Easy"
+reaction_time_sec = 0.5
+aim_noise_deg = 18.0
+aggression = 0.3
+retreat_health_threshold = 0.4
+detection_range = 400.0
