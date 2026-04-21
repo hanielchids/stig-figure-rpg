@@ -96,6 +96,7 @@ func _spawn_bot(id: int, bot_name: String) -> void:
 	get_parent().add_child(bot)
 	_bots.append(bot)
 	GameState.add_player(id, bot_name)
+	print("Spawned bot '%s' (id=%d) at %s" % [bot_name, id, str(bot.global_position)])
 
 
 func _end_match() -> void:
