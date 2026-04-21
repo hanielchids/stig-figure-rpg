@@ -1,0 +1,118 @@
+[gd_scene format=3 uid="uid://lobby001"]
+
+[ext_resource type="Script" path="res://src/ui/lobby.gd" id="1_lobby"]
+
+[node name="Lobby" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lobby")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.09, 0.12, 1)
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -250.0
+offset_right = 250.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "MULTIPLAYER"
+horizontal_alignment = 1
+
+[node name="Sep1" type="HSeparator" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="JoinConfig" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="AddressLabel" type="Label" parent="Panel/VBox/JoinConfig"]
+layout_mode = 2
+text = "IP:"
+
+[node name="AddressInput" type="LineEdit" parent="Panel/VBox/JoinConfig"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "127.0.0.1"
+placeholder_text = "IP Address"
+
+[node name="PortLabel" type="Label" parent="Panel/VBox/JoinConfig"]
+layout_mode = 2
+text = "Port:"
+
+[node name="PortInput" type="SpinBox" parent="Panel/VBox/JoinConfig"]
+layout_mode = 2
+min_value = 1024.0
+max_value = 65535.0
+value = 9876.0
+
+[node name="BotConfig" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="BotLabel" type="Label" parent="Panel/VBox/BotConfig"]
+layout_mode = 2
+text = "Bots:"
+
+[node name="BotCount" type="SpinBox" parent="Panel/VBox/BotConfig"]
+layout_mode = 2
+min_value = 0.0
+max_value = 5.0
+value = 2.0
+
+[node name="Buttons" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="HostButton" type="Button" parent="Panel/VBox/Buttons"]
+layout_mode = 2
+text = "HOST"
+
+[node name="JoinButton" type="Button" parent="Panel/VBox/Buttons"]
+layout_mode = 2
+text = "JOIN"
+
+[node name="OfflineButton" type="Button" parent="Panel/VBox/Buttons"]
+layout_mode = 2
+text = "OFFLINE"
+
+[node name="Sep2" type="HSeparator" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "Choose a mode"
+horizontal_alignment = 1
+
+[node name="PlayerList" type="VBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 100)
+
+[node name="StartButton" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+text = "START GAME"
+
+[node name="BackButton" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+text = "BACK"
