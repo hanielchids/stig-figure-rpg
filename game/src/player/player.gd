@@ -221,13 +221,14 @@ func _transition_to(new_state: State) -> void:
 	var old_state := current_state
 	current_state = new_state
 
-	# Play state transition sounds
-	match new_state:
-		State.JUMPING:
-			SoundManager.play_sfx("jump")
-		State.JETPACKING:
-			if old_state != State.JETPACKING:
-				SoundManager.play_sfx("jetpack")
+	# Play state transition sounds (only for local player)
+	if player_id == GameState.local_player_id:
+		match new_state:
+			State.JUMPING:
+				SoundManager.play_sfx("jump", -8.0)
+			State.JETPACKING:
+				if old_state != State.JETPACKING:
+					SoundManager.play_sfx("jetpack", -20.0)
 
 	# Handle collision shape swaps
 	match new_state:
