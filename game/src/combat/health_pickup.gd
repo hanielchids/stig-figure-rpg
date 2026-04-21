@@ -43,6 +43,7 @@ func _on_body_entered(body: Node2D) -> void:
 	health.heal(heal_amount)
 	var player_id: int = body.get("player_id") if body.get("player_id") != null else -1
 	EventBus.health_picked_up.emit(player_id, heal_amount)
+	SoundManager.play_sfx("pickup")
 
 	_hide_pickup()
 

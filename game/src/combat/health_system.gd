@@ -35,6 +35,7 @@ func take_damage(amount: float, attacker_id: int = -1, weapon_name: String = "")
 	health_changed.emit(current_hp, max_hp)
 	damage_taken.emit(amount, attacker_id)
 	EventBus.player_damaged.emit(owner_id, attacker_id, amount, weapon_name)
+	SoundManager.play_sfx("hit")
 
 	if current_hp <= 0:
 		_die(attacker_id, weapon_name)
