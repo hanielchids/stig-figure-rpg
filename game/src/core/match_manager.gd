@@ -96,11 +96,10 @@ func _spawn_bot(id: int, bot_name: String) -> void:
 	if spawn_manager:
 		bot.global_position = spawn_manager.get_spawn_point(enemy_positions)
 	else:
-		bot.global_position = Vector2(200 + id * 300, 820)
+		bot.global_position = Vector2(150 + id * 400, 820)
 
 	_bots.append(bot)
 	GameState.add_player(id, bot_name)
-	print("[MatchManager] Spawned %s at %s" % [bot_name, str(bot.global_position)])
 
 
 func _end_match() -> void:

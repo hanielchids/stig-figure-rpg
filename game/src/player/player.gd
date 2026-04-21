@@ -244,6 +244,14 @@ func _get_wall_normal() -> Vector2:
 	return Vector2.ZERO
 
 
+func _find_spawn_manager() -> Node:
+	var scene_root: Node = get_tree().current_scene
+	for child in scene_root.get_children():
+		if child is SpawnPointManager:
+			return child
+	return null
+
+
 func _on_died(_killer_id: int) -> void:
 	is_dead = true
 	_transition_to(State.DEAD)
@@ -254,7 +262,12 @@ func _on_died(_killer_id: int) -> void:
 
 func respawn() -> void:
 	is_dead = false
-	global_position = _spawn_position
+	# Find a spawn point inside the arena
+	var sm: Node = _find_spawn_manager()
+	if sm and sm.has_method("get_spawn_point"):
+		global_position = sm.get_spawn_point()
+	else:
+		global_position = _spawn_position
 	velocity = Vector2.ZERO
 	jetpack_fuel = Constants.JETPACK_FUEL_MAX
 	health_system.respawn()

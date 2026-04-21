@@ -29,28 +29,28 @@ script = ExtResource("11_killfeed")
 position = Vector2(800, 820)
 
 [node name="PlayerSpawn0" type="Marker2D" parent="." unique_id=159773240]
-position = Vector2(150, 850)
+position = Vector2(200, 820)
 
 [node name="PlayerSpawn1" type="Marker2D" parent="." unique_id=188362528]
-position = Vector2(1450, 850)
+position = Vector2(1400, 820)
 
 [node name="PlayerSpawn2" type="Marker2D" parent="." unique_id=672566764]
-position = Vector2(250, 600)
+position = Vector2(500, 820)
 
 [node name="PlayerSpawn3" type="Marker2D" parent="." unique_id=85709269]
-position = Vector2(1350, 600)
+position = Vector2(1100, 820)
 
 [node name="PlayerSpawn4" type="Marker2D" parent="." unique_id=1051294168]
-position = Vector2(500, 400)
+position = Vector2(300, 820)
 
 [node name="PlayerSpawn5" type="Marker2D" parent="." unique_id=890817911]
-position = Vector2(1100, 400)
+position = Vector2(700, 820)
 
 [node name="PlayerSpawn6" type="Marker2D" parent="." unique_id=1762398701]
-position = Vector2(800, 570)
+position = Vector2(900, 820)
 
 [node name="PlayerSpawn7" type="Marker2D" parent="." unique_id=591655367]
-position = Vector2(800, 250)
+position = Vector2(1200, 820)
 
 [node name="ShotgunPickup" parent="." unique_id=1717206843 instance=ExtResource("4_wpickup")]
 position = Vector2(250, 600)
