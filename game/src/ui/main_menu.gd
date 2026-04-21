@@ -27,7 +27,7 @@ func _on_play() -> void:
 
 
 func _on_settings() -> void:
-	pass  # TODO: settings screen
+	get_tree().change_scene_to_file("res://src/ui/settings_screen.tscn")
 
 
 func _on_quit() -> void:

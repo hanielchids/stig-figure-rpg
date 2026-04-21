@@ -41,6 +41,7 @@ func _on_body_entered(body: Node2D) -> void:
 
 	var player_id: int = body.get("player_id") if body.get("player_id") != null else -1
 	EventBus.weapon_picked_up.emit(player_id, weapon_resource.weapon_name)
+	SoundManager.play_sfx("pickup")
 
 	_hide_pickup()
 

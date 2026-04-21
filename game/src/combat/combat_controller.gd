@@ -60,12 +60,17 @@ func _execute_fire(weapon: WeaponDefinition, aim_direction: Vector2) -> void:
 	match weapon.type:
 		WeaponDefinition.WeaponType.HITSCAN:
 			hitscan_resolver.fire(weapon, muzzle_pos, aim_direction)
+			MuzzleFlash.spawn(player.get_tree().current_scene, muzzle_pos, 6.0)
+			_play_weapon_sound(weapon)
 			_trigger_screen_shake(2.0)
 		WeaponDefinition.WeaponType.PROJECTILE:
 			_spawn_projectile(weapon, muzzle_pos, aim_direction)
+			MuzzleFlash.spawn(player.get_tree().current_scene, muzzle_pos, 10.0)
+			SoundManager.play_sfx("rocket")
 			_trigger_screen_shake(4.0)
 		WeaponDefinition.WeaponType.MELEE:
 			melee_resolver.fire(weapon, muzzle_pos, aim_direction)
+			SoundManager.play_sfx("hit")
 			_trigger_screen_shake(3.0)
 
 
@@ -81,6 +86,17 @@ func _spawn_projectile(weapon: WeaponDefinition, origin: Vector2, direction: Vec
 	proj.weapon_name = weapon.weapon_name
 	proj.owner_id = player.player_id
 	player.get_tree().current_scene.add_child(proj)
+
+
+func _play_weapon_sound(weapon: WeaponDefinition) -> void:
+	# Map weapon names to sound file names
+	match weapon.weapon_name:
+		"Shotgun":
+			SoundManager.play_sfx("shotgun")
+		"Sniper":
+			SoundManager.play_sfx("sniper")
+		_:
+			SoundManager.play_sfx("gunshot")
 
 
 func _trigger_screen_shake(intensity: float) -> void:

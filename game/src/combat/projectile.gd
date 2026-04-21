@@ -97,8 +97,9 @@ func _explode() -> void:
 				var kb_dir: Vector2 = (target.global_position - global_position).normalized()
 				target.velocity += kb_dir * knockback_force * falloff
 
-	# Explosion visual
+	# Explosion visual and sound
 	_spawn_explosion_visual()
+	SoundManager.play_sfx("explosion")
 	queue_free()
 
 
