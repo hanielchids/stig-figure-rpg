@@ -11,6 +11,7 @@
 [ext_resource type="Resource" path="res://assets/weapons/rocket_launcher.tres" id="9_rocket"]
 [ext_resource type="Resource" path="res://assets/weapons/knife.tres" id="10_knife"]
 [ext_resource type="Script" uid="uid://dh2xv0m0pi2o0" path="res://src/combat/kill_feed.gd" id="11_killfeed"]
+[ext_resource type="Script" path="res://src/core/match_manager.gd" id="12_matchmgr"]
 
 [node name="MapArena" type="Node2D" unique_id=197030131]
 script = ExtResource("1_map")
@@ -83,3 +84,7 @@ position = Vector2(500, 400)
 
 [node name="HealthPickup4" parent="." unique_id=1025002156 instance=ExtResource("5_hpickup")]
 position = Vector2(1100, 400)
+
+[node name="MatchManager" type="Node" parent="."]
+script = ExtResource("12_matchmgr")
+bot_count = 3
