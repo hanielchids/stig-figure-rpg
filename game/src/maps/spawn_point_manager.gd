@@ -7,14 +7,22 @@ var player_spawns: Array[Marker2D] = []
 
 
 func _ready() -> void:
+	_collect_spawns()
+
+
+func _collect_spawns() -> void:
+	if not player_spawns.is_empty():
+		return
 	for child in get_parent().get_children():
 		if child is Marker2D and child.name.begins_with("PlayerSpawn"):
 			player_spawns.append(child)
 
 
 func get_spawn_point(enemy_positions: Array[Vector2] = []) -> Vector2:
+	_collect_spawns()
 	if player_spawns.is_empty():
-		return Vector2(640, 300)
+		# Fallback: on the arena floor
+		return Vector2(400 + randi() % 800, 820)
 
 	if enemy_positions.is_empty():
 		var idx: int = randi() % player_spawns.size()

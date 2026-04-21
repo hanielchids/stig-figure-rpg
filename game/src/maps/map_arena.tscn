@@ -11,11 +11,10 @@
 [ext_resource type="Resource" path="res://assets/weapons/rocket_launcher.tres" id="9_rocket"]
 [ext_resource type="Resource" path="res://assets/weapons/knife.tres" id="10_knife"]
 [ext_resource type="Script" uid="uid://dh2xv0m0pi2o0" path="res://src/combat/kill_feed.gd" id="11_killfeed"]
-[ext_resource type="Script" path="res://src/core/match_manager.gd" id="12_matchmgr"]
-[ext_resource type="PackedScene" uid="uid://hud001" path="res://src/ui/hud.tscn" id="13_hud"]
-[ext_resource type="PackedScene" uid="uid://cu2a020aikiyy" path="res://src/ui/scoreboard.tscn" id="14_scoreboard"]
-[ext_resource type="PackedScene" uid="uid://qbxbxc812gjo" path="res://src/ui/match_results.tscn" id="15_results"]
-[ext_resource type="Script" path="res://src/ui/crosshair.gd" id="16_crosshair"]
+[ext_resource type="Script" uid="uid://5q3pvwdrlgto" path="res://src/core/match_manager.gd" id="12_matchmgr"]
+[ext_resource type="PackedScene" path="res://src/ui/hud.tscn" id="13_hud"]
+[ext_resource type="PackedScene" path="res://src/ui/scoreboard.tscn" id="14_scoreboard"]
+[ext_resource type="PackedScene" path="res://src/ui/match_results.tscn" id="15_results"]
 
 [node name="MapArena" type="Node2D" unique_id=197030131]
 script = ExtResource("1_map")
@@ -30,28 +29,28 @@ script = ExtResource("11_killfeed")
 position = Vector2(800, 820)
 
 [node name="PlayerSpawn0" type="Marker2D" parent="." unique_id=159773240]
-position = Vector2(150, 850)
+position = Vector2(200, 820)
 
 [node name="PlayerSpawn1" type="Marker2D" parent="." unique_id=188362528]
-position = Vector2(1450, 850)
+position = Vector2(1400, 820)
 
 [node name="PlayerSpawn2" type="Marker2D" parent="." unique_id=672566764]
-position = Vector2(250, 600)
+position = Vector2(500, 820)
 
 [node name="PlayerSpawn3" type="Marker2D" parent="." unique_id=85709269]
-position = Vector2(1350, 600)
+position = Vector2(1100, 820)
 
 [node name="PlayerSpawn4" type="Marker2D" parent="." unique_id=1051294168]
-position = Vector2(500, 400)
+position = Vector2(300, 820)
 
 [node name="PlayerSpawn5" type="Marker2D" parent="." unique_id=890817911]
-position = Vector2(1100, 400)
+position = Vector2(700, 820)
 
 [node name="PlayerSpawn6" type="Marker2D" parent="." unique_id=1762398701]
-position = Vector2(800, 570)
+position = Vector2(900, 820)
 
 [node name="PlayerSpawn7" type="Marker2D" parent="." unique_id=591655367]
-position = Vector2(800, 250)
+position = Vector2(1200, 820)
 
 [node name="ShotgunPickup" parent="." unique_id=1717206843 instance=ExtResource("4_wpickup")]
 position = Vector2(250, 600)
@@ -89,15 +88,11 @@ position = Vector2(500, 400)
 [node name="HealthPickup4" parent="." unique_id=1025002156 instance=ExtResource("5_hpickup")]
 position = Vector2(1100, 400)
 
-[node name="MatchManager" type="Node" parent="."]
+[node name="MatchManager" type="Node" parent="." unique_id=1876361715]
 script = ExtResource("12_matchmgr")
-bot_count = 3
 
-[node name="HUD" parent="." instance=ExtResource("13_hud")]
+[node name="HUD" parent="." unique_id=2056223196 instance=ExtResource("13_hud")]
 
-[node name="Crosshair" parent="HUD" index="7"]
-script = ExtResource("16_crosshair")
+[node name="Scoreboard" parent="." unique_id=966746775 instance=ExtResource("14_scoreboard")]
 
-[node name="Scoreboard" parent="." instance=ExtResource("14_scoreboard")]
-
-[node name="MatchResults" parent="." instance=ExtResource("15_results")]
+[node name="MatchResults" parent="." unique_id=1339740948 instance=ExtResource("15_results")]
