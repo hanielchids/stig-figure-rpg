@@ -1,9 +1,9 @@
-## Manages a match — spawns bots alongside the existing player, tracks score.
-## The human player is already placed in the map scene.
-## This script only spawns bots using bot.tscn (which has NO Camera2D).
+## Manages a match — spawns players/bots, tracks score, handles match flow.
+## Works in both offline (single-player + bots) and online (multiplayer) modes.
 extends Node
 
 var bot_scene: PackedScene = preload("res://src/ai/bot.tscn")
+var player_scene: PackedScene = preload("res://src/player/player.tscn")
 
 @export var bot_count: int = 3
 @export var score_limit: int = Constants.DEFAULT_SCORE_LIMIT
@@ -13,22 +13,17 @@ var spawn_manager: SpawnPointManager
 var match_active: bool = false
 var match_timer: float = 0.0
 var _bots: Array[CharacterBody2D] = []
+var _players: Dictionary = {}  # peer_id -> CharacterBody2D
 
 
 func _ready() -> void:
-	# Find spawn manager and player in the scene
 	for child in get_parent().get_children():
 		if child is SpawnPointManager:
 			spawn_manager = child
 
-	# Register the existing human player into the group and game state
-	var human_player: Node = get_parent().get_node_or_null("Player")
-	if human_player and human_player is CharacterBody2D:
-		human_player.add_to_group("players")
-		GameState.add_player(human_player.player_id, "Player")
-		GameState.local_player_id = human_player.player_id
+	if NetworkManager.is_online:
+		NetworkManager.player_disconnected.connect(_on_player_disconnected)
 
-	# Wait one frame so the scene tree is fully ready before adding bots
 	await get_tree().process_frame
 	_start_match()
 
@@ -55,51 +50,131 @@ func _start_match() -> void:
 	match_timer = 0.0
 	match_active = true
 
-	# Re-register human player after reset
+	if NetworkManager.is_online:
+		_start_online_match()
+	else:
+		_start_offline_match()
+
+	EventBus.match_started.emit("Deathmatch", "Arena")
+
+
+func _start_offline_match() -> void:
+	# Register existing human player from the scene
 	var human_player: Node = get_parent().get_node_or_null("Player")
 	if human_player and human_player is CharacterBody2D:
 		human_player.add_to_group("players")
 		GameState.add_player(human_player.player_id, "Player")
 		GameState.local_player_id = human_player.player_id
+		_players[0] = human_player
 
 	# Spawn bots
 	var bot_names: Array[String] = ["Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Ghost"]
 	for i in bot_count:
 		var bot_name: String = bot_names[i % bot_names.size()]
-		_spawn_bot(i + 1, bot_name)
-
-	EventBus.match_started.emit("Deathmatch", "Arena")
+		_spawn_bot(i + 100, bot_name)  # bot IDs start at 100
 
 
-func _spawn_bot(id: int, bot_name: String) -> void:
+func _start_online_match() -> void:
+	# Only the server spawns players
+	if not NetworkManager.is_server():
+		return
+
+	# Spawn the host player
+	var host_id: int = multiplayer.get_unique_id()
+	_spawn_network_player(host_id, "Host")
+	GameState.local_player_id = host_id
+
+	# Spawn connected peers
+	for peer_id in NetworkManager.connected_peers:
+		_spawn_network_player(peer_id, "Player_%d" % peer_id)
+
+	# Spawn bots to fill
+	var bot_names: Array[String] = ["Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Ghost"]
+	for i in bot_count:
+		var bot_name: String = bot_names[i % bot_names.size()]
+		_spawn_bot(i + 100, bot_name)
+
+
+func _spawn_network_player(peer_id: int, player_name: String) -> void:
+	var is_local: bool = (peer_id == multiplayer.get_unique_id())
+
+	var character: CharacterBody2D
+	if is_local:
+		character = player_scene.instantiate()
+	else:
+		character = bot_scene.instantiate()  # no Camera2D for remote players
+		# Remove BotController if present — this is a human, not a bot
+		var bot_ctrl: Node = character.get_node_or_null("BotController")
+		if bot_ctrl:
+			bot_ctrl.queue_free()
+
+	character.player_id = peer_id
+	character.name = "Player_%d" % peer_id
+	character.add_to_group("players")
+
+	if NetworkManager.is_online:
+		character.set_multiplayer_authority(peer_id)
+
+	get_parent().add_child(character)
+
+	if spawn_manager:
+		var enemy_positions: Array[Vector2] = _get_enemy_positions(peer_id)
+		character.global_position = spawn_manager.get_spawn_point(enemy_positions)
+	else:
+		character.global_position = Vector2(400 + peer_id % 4 * 300, 820)
+
+	# Remote human players don't use local input
+	if not is_local:
+		var input_mgr: Node = character.get_node_or_null("InputManager")
+		if input_mgr:
+			input_mgr.set_process(false)
+
+	_players[peer_id] = character
+	GameState.add_player(peer_id, player_name)
+
+	if is_local:
+		GameState.local_player_id = peer_id
+
+
+func _spawn_bot(bot_id: int, bot_name: String) -> void:
 	var bot: CharacterBody2D = bot_scene.instantiate()
-	bot.player_id = id
-	bot.name = "Bot_%d" % id
-
-	# Pick spawn point away from other players
-	var enemy_positions: Array[Vector2] = []
-	for node in get_tree().get_nodes_in_group("players"):
-		if node is CharacterBody2D:
-			var character: CharacterBody2D = node as CharacterBody2D
-			enemy_positions.append(character.global_position)
-
+	bot.player_id = bot_id
+	bot.name = "Bot_%d" % bot_id
 	bot.add_to_group("players")
 
-	# Disable human input processing — bot controller writes input directly
 	var input_mgr: Node = bot.get_node_or_null("InputManager")
 	if input_mgr:
 		input_mgr.set_process(false)
 
-	# Add to tree first, THEN set position (global_position needs scene tree)
 	get_parent().add_child(bot)
 
 	if spawn_manager:
+		var enemy_positions: Array[Vector2] = _get_enemy_positions(bot_id)
 		bot.global_position = spawn_manager.get_spawn_point(enemy_positions)
 	else:
-		bot.global_position = Vector2(150 + id * 400, 820)
+		bot.global_position = Vector2(150 + bot_id * 300, 820)
 
 	_bots.append(bot)
-	GameState.add_player(id, bot_name)
+	GameState.add_player(bot_id, bot_name)
+
+
+func _get_enemy_positions(exclude_id: int) -> Array[Vector2]:
+	var positions: Array[Vector2] = []
+	for node in get_tree().get_nodes_in_group("players"):
+		if node is CharacterBody2D:
+			var character: CharacterBody2D = node as CharacterBody2D
+			if character.player_id != exclude_id and not character.is_dead:
+				positions.append(character.global_position)
+	return positions
+
+
+func _on_player_disconnected(peer_id: int) -> void:
+	if _players.has(peer_id):
+		var character: CharacterBody2D = _players[peer_id]
+		if is_instance_valid(character):
+			character.queue_free()
+		_players.erase(peer_id)
+		GameState.remove_player(peer_id)
 
 
 func _end_match() -> void:

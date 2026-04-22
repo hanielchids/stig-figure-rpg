@@ -23,7 +23,7 @@ func _ready() -> void:
 
 
 func _on_play() -> void:
-	get_tree().change_scene_to_file("res://src/maps/map_arena.tscn")
+	get_tree().change_scene_to_file("res://src/ui/lobby.tscn")
 
 
 func _on_settings() -> void:

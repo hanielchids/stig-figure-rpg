@@ -26,6 +26,7 @@ EventBus="*res://src/core/event_bus.gd"
 GameState="*res://src/core/game_state.gd"
 Constants="*res://src/core/constants.gd"
 SoundManager="*res://src/core/sound_manager.gd"
+NetworkManager="*res://src/networking/network_manager.gd"
 
 [display]
 
